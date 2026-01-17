@@ -1,0 +1,136 @@
+<section class="entity-page">
+  <h2 id="page-heading" data-cy="ServiceJefHeading">
+    <span jhiTranslate="jefServiceApp.serviceJef.home.title">ServiceJefs</span>
+
+    <div class="entity-actions d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="jefServiceApp.serviceJef.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-service-jef"
+        [routerLink]="['/service-jef/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="jefServiceApp.serviceJef.home.createLabel">Créer un nouveau Service Jef</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  <jhi-filter [filters]="filters" />
+
+  @if (serviceJefs().length === 0) {
+    <div class="alert alert-warning entity-empty" id="no-result">
+      <span jhiTranslate="jefServiceApp.serviceJef.home.notFound">Aucun Service Jef trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities entity-table-wrap" id="entities">
+      <table class="table table-striped entity-table" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="nom">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.serviceJef.nom">Nom</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="description">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.serviceJef.description">Description</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="actif">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.serviceJef.actif">Actif</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (serviceJef of serviceJefs(); track trackId(serviceJef)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/service-jef', serviceJef.id, 'view']">{{ serviceJef.id }}</a>
+              </td>
+              <td>{{ serviceJef.nom }}</td>
+              <td>{{ serviceJef.description }}</td>
+              <td>{{ serviceJef.actif }}</td>
+              <td class="text-end">
+                <div class="btn-group entity-row-actions">
+                  <button
+                    type="submit"
+                    [routerLink]="['/mission']"
+                    [queryParams]="{ 'filter[serviceJefId.in]': serviceJef.id }"
+                    class="btn btn-info btn-sm"
+                    data-cy="filterOtherEntityButton"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span
+                      class="d-none d-md-inline"
+                      jhiTranslate="entity.action.show"
+                      [translateValues]="{ otherEntity: ('jefServiceApp.serviceJef.missions' | translate) }"
+                      >Show Missions</span
+                    >
+                  </button>
+                  <a [routerLink]="['/service-jef', serviceJef.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/service-jef', serviceJef.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(serviceJef)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+  @if (serviceJefs().length > 0) {
+    <div>
+      <div class="d-flex justify-content-center">
+        <jhi-item-count [params]="{ page, totalItems, itemsPerPage }" />
+      </div>
+
+      <div class="d-flex justify-content-center">
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    </div>
+  }
+</section>

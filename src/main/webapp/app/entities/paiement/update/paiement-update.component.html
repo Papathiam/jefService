@@ -1,0 +1,147 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-paiement-heading" data-cy="PaiementCreateUpdateHeading" jhiTranslate="jefServiceApp.paiement.home.createOrEditLabel">
+        Créer ou éditer un Paiement
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="jefServiceApp.paiement.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let montantTotalRef = editForm.get('montantTotal')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_montantTotal" jhiTranslate="jefServiceApp.paiement.montantTotal">Montant Total</label>
+          <input
+            type="number"
+            class="form-control"
+            name="montantTotal"
+            id="field_montantTotal"
+            data-cy="montantTotal"
+            formControlName="montantTotal"
+          />
+          @if (montantTotalRef.invalid && (montantTotalRef.dirty || montantTotalRef.touched)) {
+            <div>
+              @if (editForm.get('montantTotal')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('montantTotal')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let commissionRef = editForm.get('commission')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_commission" jhiTranslate="jefServiceApp.paiement.commission">Commission</label>
+          <input
+            type="number"
+            class="form-control"
+            name="commission"
+            id="field_commission"
+            data-cy="commission"
+            formControlName="commission"
+          />
+          @if (commissionRef.invalid && (commissionRef.dirty || commissionRef.touched)) {
+            <div>
+              @if (editForm.get('commission')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('commission')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let montantTechnicienRef = editForm.get('montantTechnicien')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_montantTechnicien" jhiTranslate="jefServiceApp.paiement.montantTechnicien"
+            >Montant Technicien</label
+          >
+          <input
+            type="number"
+            class="form-control"
+            name="montantTechnicien"
+            id="field_montantTechnicien"
+            data-cy="montantTechnicien"
+            formControlName="montantTechnicien"
+          />
+          @if (montantTechnicienRef.invalid && (montantTechnicienRef.dirty || montantTechnicienRef.touched)) {
+            <div>
+              @if (editForm.get('montantTechnicien')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('montantTechnicien')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_moyenPaiement" jhiTranslate="jefServiceApp.paiement.moyenPaiement">Moyen Paiement</label>
+          <select
+            class="form-control"
+            name="moyenPaiement"
+            formControlName="moyenPaiement"
+            id="field_moyenPaiement"
+            data-cy="moyenPaiement"
+          >
+            <option [ngValue]="null">{{ 'jefServiceApp.MoyenPaiement.null' | translate }}</option>
+            @for (moyenPaiement of moyenPaiementValues; track $index) {
+              <option [value]="moyenPaiement">{{ 'jefServiceApp.MoyenPaiement.' + moyenPaiement | translate }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_statut" jhiTranslate="jefServiceApp.paiement.statut">Statut</label>
+          <select class="form-control" name="statut" formControlName="statut" id="field_statut" data-cy="statut">
+            <option [ngValue]="null">{{ 'jefServiceApp.StatutPaiement.null' | translate }}</option>
+            @for (statutPaiement of statutPaiementValues; track $index) {
+              <option [value]="statutPaiement">{{ 'jefServiceApp.StatutPaiement.' + statutPaiement | translate }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_reference" jhiTranslate="jefServiceApp.paiement.reference">Reference</label>
+          <input type="text" class="form-control" name="reference" id="field_reference" data-cy="reference" formControlName="reference" />
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

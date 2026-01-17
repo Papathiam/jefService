@@ -1,0 +1,146 @@
+<div class="client-login-layout">
+  <section class="client-login-hero">
+    <p class="eyebrow" jhiTranslate="jefServiceApp.client.home.subtitle">Vue opérationnelle</p>
+    <h1 jhiTranslate="jefServiceApp.client.home.title">Clients</h1>
+    <p class="hero-text" jhiTranslate="jefServiceApp.client.home.description">
+      Prenez des décisions plus rapides grâce à une vue modernisée et prête pour le terrain.
+    </p>
+    <div class="hero-tags">
+      <span>{{ totalItems | number: '1.0-0' }} {{ 'jefServiceApp.client.home.quickStats.totalLabel' | translate }}</span>
+      <span>{{ clientsWithGeo() }}/{{ clients().length }} {{ 'jefServiceApp.client.home.quickStats.geoLabel' | translate }}</span>
+      <span jhiTranslate="jefServiceApp.client.home.sidebar.filtersTitle">Filtres avancés</span>
+    </div>
+  </section>
+
+  <section class="client-panel card shadow-sm">
+    <div class="client-panel__actions">
+      <button class="btn btn-outline-primary" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="jefServiceApp.client.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+      <button id="jh-create-entity" data-cy="entityCreateButton" class="btn btn-primary" [routerLink]="['/client/new']">
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="jefServiceApp.client.home.createLabel">Créer un nouveau Client</span>
+      </button>
+    </div>
+
+    <div class="client-panel__search-grid">
+      <div class="form-group">
+        <label for="clientAddressSearch" jhiTranslate="jefServiceApp.client.home.addressSearchLabel">Recherche par adresse</label>
+        <div class="search-input">
+          <fa-icon icon="search"></fa-icon>
+          <input
+            type="search"
+            id="clientAddressSearch"
+            [ngModel]="addressSearch()"
+            (ngModelChange)="onAddressSearchChange($event)"
+            [placeholder]="'jefServiceApp.client.home.addressSearchPlaceholder' | translate"
+          />
+          @if (addressSearch().length > 0) {
+            <button type="button" (click)="clearAddressSearch()">
+              <fa-icon icon="times"></fa-icon>
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="clientUserSearch" jhiTranslate="jefServiceApp.client.home.userSearchLabel">Recherche par utilisateur</label>
+        <div class="search-input">
+          <fa-icon icon="user"></fa-icon>
+          <input
+            type="search"
+            id="clientUserSearch"
+            [ngModel]="userSearch()"
+            (ngModelChange)="onUserSearchChange($event)"
+            [placeholder]="'jefServiceApp.client.home.userSearchPlaceholder' | translate"
+          />
+          @if (userSearch().length > 0) {
+            <button type="button" (click)="clearUserSearch()">
+              <fa-icon icon="times"></fa-icon>
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="client-panel__filters card">
+      <h3 jhiTranslate="jefServiceApp.client.home.sidebar.filtersTitle">Filtres avancés</h3>
+      <jhi-filter [filters]="filters" />
+    </div>
+
+    <jhi-alert-error />
+    <jhi-alert />
+
+    @if (filteredClients().length === 0) {
+      <div class="client-panel__empty">
+        <p jhiTranslate="jefServiceApp.client.home.noSearchResult">Aucun client ne correspond à votre recherche</p>
+        <button class="btn btn-link" (click)="clearAddressSearch(); clearUserSearch()">
+          <fa-icon icon="times"></fa-icon>
+          <span jhiTranslate="jefServiceApp.client.home.searchClear">Effacer les recherches</span>
+        </button>
+      </div>
+    } @else {
+      <div class="table-responsive client-panel__table">
+        <table class="table align-middle">
+          <thead>
+            <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+              <th scope="col" jhiSortBy="adresse" jhiTranslate="jefServiceApp.client.adresse">Adresse</th>
+              <th scope="col" jhiSortBy="user.id" jhiTranslate="jefServiceApp.client.user">Utilisateur</th>
+              <th scope="col" jhiSortBy="latitude" jhiTranslate="jefServiceApp.client.latitude">Latitude</th>
+              <th scope="col" jhiSortBy="longitude" jhiTranslate="jefServiceApp.client.longitude">Longitude</th>
+              <th scope="col" class="text-end" jhiTranslate="jefServiceApp.client.home.table.actions">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (client of filteredClients(); track trackId(client)) {
+              <tr data-cy="entityTable">
+                <td>
+                  <p class="client-panel__primary">{{ client.adresse ?? ('jefServiceApp.client.home.noAddress' | translate) }}</p>
+                  <small>#{{ client.id }}</small>
+                </td>
+                <td>
+                  @if (displayUser(client.user); as userLabel) {
+                    {{ userLabel }}
+                  } @else {
+                    <span jhiTranslate="jefServiceApp.client.home.notAssigned">Non attribué</span>
+                  }
+                </td>
+                <td>{{ client.latitude ?? '-' }}</td>
+                <td>{{ client.longitude ?? '-' }}</td>
+                <td class="text-end">
+                  <div class="btn-group btn-group-sm">
+                    <a [routerLink]="['/client', client.id, 'view']" class="btn btn-outline-secondary">
+                      <fa-icon icon="eye"></fa-icon>
+                    </a>
+                    <a [routerLink]="['/client', client.id, 'edit']" class="btn btn-outline-primary">
+                      <fa-icon icon="pencil-alt"></fa-icon>
+                    </a>
+                    <button type="button" class="btn btn-outline-danger" (click)="delete(client)">
+                      <fa-icon icon="times"></fa-icon>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    @if (clients().length > 0) {
+      <div class="client-panel__pagination">
+        <jhi-item-count [params]="{ page, totalItems, itemsPerPage }" />
+        <ngb-pagination
+          [collectionSize]="totalItems"
+          [page]="page"
+          [pageSize]="itemsPerPage"
+          [maxSize]="5"
+          [rotate]="true"
+          [boundaryLinks]="true"
+          (pageChange)="navigateToPage($event)"
+        ></ngb-pagination>
+      </div>
+    }
+  </section>
+</div>

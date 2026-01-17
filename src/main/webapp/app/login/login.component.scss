@@ -1,0 +1,123 @@
+.login-layout {
+  width: min(1080px, 100%);
+  min-height: 72vh;
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  background: #ffffff;
+  border-radius: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  box-shadow: 0 20px 60px rgba(5, 20, 34, 0.3);
+}
+
+.login-showcase {
+  padding: 2rem 2.2rem;
+  background:
+    radial-gradient(circle at top left, rgba(238, 172, 95, 0.35), transparent 48%),
+    linear-gradient(158deg, #0f2f3e 0%, #1a4f65 55%, #2b9b8b 100%);
+  color: #f3fbff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.login-showcase h1 {
+  margin: 0.4rem 0 0.7rem;
+  font-size: clamp(2rem, 3.2vw, 2.7rem);
+  font-weight: 800;
+}
+
+.showcase-text {
+  max-width: 36ch;
+  font-size: 1rem;
+  color: #e1f3fb;
+}
+
+.showcase-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.3rem;
+}
+
+.showcase-tags span {
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.login-panel {
+  padding: 2rem 1.9rem;
+  background: linear-gradient(180deg, #ffffff 0%, #f7fafb 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-panel h2 {
+  margin: 0;
+  font-weight: 800;
+  color: #102f3e;
+}
+
+.panel-subtitle {
+  margin: 0.35rem 0 1.2rem;
+  color: #577080;
+}
+
+.form-control {
+  border-radius: 12px;
+  border: 1px solid #cfdee6;
+  min-height: 44px;
+}
+
+.form-control:focus {
+  border-color: #1fa46b;
+  box-shadow: 0 0 0 0.2rem rgba(31, 164, 107, 0.17);
+}
+
+.btn-login {
+  min-height: 44px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(120deg, #1c9a5e 0%, #2bc483 100%);
+  color: #fff;
+  font-weight: 700;
+}
+
+.panel-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+}
+
+.panel-links .alert-link {
+  color: #177445;
+}
+
+@media (max-width: 991.98px) {
+  .login-layout {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .login-showcase {
+    padding: 1.5rem;
+  }
+
+  .login-panel {
+    padding: 1.4rem;
+  }
+}

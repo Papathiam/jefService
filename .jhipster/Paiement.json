@@ -1,0 +1,50 @@
+{
+  "annotations": {
+    "changelogDate": "20260117145913"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "montantTotal",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "commission",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "montantTechnicien",
+      "fieldType": "Double",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "moyenPaiement",
+      "fieldType": "MoyenPaiement",
+      "fieldValues": "WAVE,ORANGE,FREE"
+    },
+    {
+      "fieldName": "statut",
+      "fieldType": "StatutPaiement",
+      "fieldValues": "INITIE,CONFIRME,ANNULE"
+    },
+    {
+      "fieldName": "reference",
+      "fieldType": "String"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Paiement",
+  "relationships": [
+    {
+      "otherEntityName": "mission",
+      "otherEntityRelationshipName": "paiement",
+      "relationshipName": "mission",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

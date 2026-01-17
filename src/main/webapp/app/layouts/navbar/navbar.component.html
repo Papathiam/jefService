@@ -1,0 +1,108 @@
+<div class="mobile-topbar">
+  <a class="brand-mobile" routerLink="/" (click)="closeSidebar()">
+    <span class="brand-mobile-text">Jef Service</span>
+  </a>
+  <button type="button" class="mobile-toggle" (click)="toggleSidebar()" aria-label="Ouvrir le menu">
+    <fa-icon icon="bars"></fa-icon>
+  </button>
+</div>
+
+<div class="sidebar-overlay" [class.open]="isSidebarOpen()" (click)="closeSidebar()"></div>
+
+<aside data-cy="navbar" class="sidebar" [class.open]="isSidebarOpen()">
+  <div class="sidebar-header">
+    <a class="brand" routerLink="/" (click)="closeSidebar()">
+      <span class="logo-img"></span>
+      <span class="brand-block">
+        <span class="brand-text">Espace Opérations</span>
+        <span class="brand-version">Plateforme Jef Service</span>
+      </span>
+    </a>
+  </div>
+
+  <div class="sidebar-body">
+    <div class="sidebar-section">
+      <h6 class="section-title">Navigation</h6>
+      <a class="menu-item" routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="closeSidebar()">
+        <fa-icon icon="home"></fa-icon>
+        <span>Tableau de bord</span>
+      </a>
+    </div>
+
+    @if (account() !== null) {
+      <div class="sidebar-section">
+        <h6 class="section-title">Gestion métier</h6>
+        @for (item of businessMenuItems; track item.route) {
+          <a class="menu-item" [routerLink]="item.route" routerLinkActive="active" (click)="closeSidebar()">
+            <fa-icon [icon]="item.icon"></fa-icon>
+            <span>{{ item.label }}</span>
+          </a>
+        }
+      </div>
+
+      @if (hasAuthority(authority.ADMIN)) {
+        <div class="sidebar-section">
+          <h6 class="section-title">Administration</h6>
+          @for (item of adminMenuItems; track item.route) {
+            <a class="menu-item" [routerLink]="item.route" routerLinkActive="active" (click)="closeSidebar()">
+              <fa-icon [icon]="item.icon"></fa-icon>
+              <span>{{ item.label }}</span>
+            </a>
+          }
+          @if (openAPIEnabled) {
+            <a class="menu-item" routerLink="/admin/docs" routerLinkActive="active" (click)="closeSidebar()">
+              <fa-icon icon="book"></fa-icon>
+              <span>API</span>
+            </a>
+          }
+        </div>
+      }
+    }
+  </div>
+
+  <div class="sidebar-footer">
+    @if (languages && languages.length > 1) {
+      <div class="languages">
+        @for (language of languages; track language) {
+          <button type="button" class="lang-chip" (click)="changeLanguage(language)">
+            {{ language === 'fr' ? 'Français' : (language | uppercase) }}
+          </button>
+        }
+      </div>
+    }
+
+    @let accountRef = account();
+    @if (accountRef !== null) {
+      <div class="account-card">
+        <div class="account-name">
+          <fa-icon icon="user"></fa-icon>
+          <span>{{ accountRef.login }}</span>
+        </div>
+        <p class="account-role">{{ accountRef.authorities.join(' · ') }}</p>
+        <a class="menu-item compact" routerLink="/account/settings" routerLinkActive="active" (click)="closeSidebar()">
+          <fa-icon icon="wrench"></fa-icon>
+          <span>Profil</span>
+        </a>
+        <a class="menu-item compact" routerLink="/account/password" routerLinkActive="active" (click)="closeSidebar()">
+          <fa-icon icon="lock"></fa-icon>
+          <span>Mot de passe</span>
+        </a>
+        <button type="button" class="menu-item compact action-btn" (click)="logout()">
+          <fa-icon icon="sign-out-alt"></fa-icon>
+          <span>Déconnexion</span>
+        </button>
+      </div>
+    } @else {
+      <div class="account-card">
+        <button type="button" class="menu-item compact action-btn" (click)="login()">
+          <fa-icon icon="sign-in-alt"></fa-icon>
+          <span>Connexion</span>
+        </button>
+        <a class="menu-item compact" routerLink="/account/register" routerLinkActive="active" (click)="closeSidebar()">
+          <fa-icon icon="user-plus"></fa-icon>
+          <span>Créer un compte</span>
+        </a>
+      </div>
+    }
+  </div>
+</aside>

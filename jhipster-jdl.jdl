@@ -1,0 +1,92 @@
+// ===== ENUMS =====
+enum StatutValidation { EN_ATTENTE, VALIDE, REFUSE }
+enum TypeDocument { CNI, PASSPORT, DIPLOME, AUTRE }
+enum StatutMission { EN_ATTENTE, ACCEPTEE, EN_COURS, TERMINEE, PAYEE }
+enum MoyenPaiement { WAVE, ORANGE, FREE }
+enum StatutPaiement { INITIE, CONFIRME, ANNULE }
+
+// ===== ENTITÉS =====
+entity Client {
+  latitude Double
+  longitude Double
+  adresse String
+}
+
+entity Technicien {
+  nom String required
+  prenom String required
+  tarifMin Double required
+  tarifMax Double required
+  latitude Double
+  longitude Double
+  disponible Boolean
+  statutValidation StatutValidation
+  noteMoyenne Double
+}
+
+entity ServiceJef {
+  nom String required
+  description String
+  actif Boolean
+}
+
+entity Document {
+  type TypeDocument required
+  urlFichier String required
+  valide Boolean
+  dateUpload Instant
+}
+
+entity Mission {
+  description String
+  latitude Double
+  longitude Double
+  statut StatutMission
+  prixPropose Double
+  dateCreation Instant
+}
+
+entity Paiement {
+  montantTotal Double required
+  commission Double required
+  montantTechnicien Double required
+  moyenPaiement MoyenPaiement
+  statut StatutPaiement
+  reference String
+}
+
+// ===== RELATIONS =====
+relationship OneToOne {
+  Client{user} to User with builtInEntity
+  Technicien{user} to User with builtInEntity
+  Mission{paiement} to Paiement{mission}
+}
+
+relationship OneToMany {
+  Technicien to Document{technicien}
+  Client to Mission{client}
+  Technicien to Mission{technicien}
+}
+
+relationship ManyToOne {
+  Mission to ServiceJef{missions}
+}
+
+relationship ManyToMany {
+  Technicien{serviceJefs} to ServiceJef{techniciens}
+}
+
+// ===== PAGINATION =====
+paginate Mission with pagination
+paginate Technicien with pagination
+paginate Client with pagination
+paginate ServiceJef with pagination
+
+// ===== DTOs =====
+dto Client, Technicien, ServiceJef with mapstruct
+
+// ===== SERVICES =====
+service all with serviceImpl
+
+// ===== FILTERS =====
+filter all

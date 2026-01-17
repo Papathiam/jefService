@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Added the entity Technicien.
+    -->
+    <changeSet id="20260117145909-1" author="jhipster">
+        <createTable tableName="technicien">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="nom" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="prenom" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+            <column name="tarif_min" type="double">
+                <constraints nullable="false" />
+            </column>
+            <column name="tarif_max" type="double">
+                <constraints nullable="false" />
+            </column>
+            <column name="latitude" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="longitude" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="disponible" type="boolean">
+                <constraints nullable="true" />
+            </column>
+            <column name="statut_validation" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="note_moyenne" type="double">
+                <constraints nullable="true" />
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="true" unique="true" uniqueConstraintName="ux_technicien__user_id" />
+            </column>
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20260117145909-1-relations" author="jhipster">
+
+        <createTable tableName="rel_technicien__service_jefs">
+            <column name="service_jefs_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technicien_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey columnNames="technicien_id, service_jefs_id" tableName="rel_technicien__service_jefs"/>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
+
+    <!--
+        Load sample data generated with Faker.js
+        - This data can be easily edited using a CSV editor (or even MS Excel) and
+          is located in the 'src/main/resources/config/liquibase/fake-data' directory
+        - By default this data is applied when running with the JHipster 'dev' profile.
+          This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
+          Spring Boot configuration key.
+    -->
+    <changeSet id="20260117145909-1-data" author="jhipster" context="faker">
+        <loadData
+                  file="config/liquibase/fake-data/technicien.csv"
+                  separator=";"
+                  tableName="technicien"
+                  usePreparedStatements="true">
+            <column name="id" type="numeric"/>
+            <column name="nom" type="string"/>
+            <column name="prenom" type="string"/>
+            <column name="tarif_min" type="numeric"/>
+            <column name="tarif_max" type="numeric"/>
+            <column name="latitude" type="numeric"/>
+            <column name="longitude" type="numeric"/>
+            <column name="disponible" type="boolean"/>
+            <column name="statut_validation" type="string"/>
+            <column name="note_moyenne" type="numeric"/>
+            <!-- jhipster-needle-liquibase-add-loadcolumn - JHipster (and/or extensions) can add load columns here -->
+        </loadData>
+    </changeSet>
+</databaseChangeLog>

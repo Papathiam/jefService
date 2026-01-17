@@ -1,0 +1,28 @@
+{
+  "jefServiceApp": {
+    "serviceJef": {
+      "home": {
+        "title": "ServiceJefs",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Service Jef",
+        "createOrEditLabel": "Créer ou éditer un Service Jef",
+        "notFound": "Aucun Service Jef trouvé"
+      },
+      "created": "Un nouveau Service Jef a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Service Jef avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Service Jef avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Service Jef {{ id }} ?"
+      },
+      "detail": {
+        "title": "Service Jef"
+      },
+      "id": "ID",
+      "nom": "Nom",
+      "description": "Description",
+      "actif": "Actif",
+      "missions": "Missions",
+      "techniciens": "Techniciens"
+    }
+  }
+}

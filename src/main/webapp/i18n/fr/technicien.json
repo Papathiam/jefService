@@ -1,0 +1,36 @@
+{
+  "jefServiceApp": {
+    "technicien": {
+      "home": {
+        "title": "Techniciens",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Technicien",
+        "createOrEditLabel": "Créer ou éditer un Technicien",
+        "notFound": "Aucun Technicien trouvé"
+      },
+      "created": "Un nouveau Technicien a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Technicien avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Technicien avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Technicien {{ id }} ?"
+      },
+      "detail": {
+        "title": "Technicien"
+      },
+      "id": "ID",
+      "nom": "Nom",
+      "prenom": "Prenom",
+      "tarifMin": "Tarif Min",
+      "tarifMax": "Tarif Max",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "disponible": "Disponible",
+      "statutValidation": "Statut Validation",
+      "noteMoyenne": "Note Moyenne",
+      "user": "User",
+      "document": "Document",
+      "mission": "Mission",
+      "serviceJefs": "Service Jefs"
+    }
+  }
+}

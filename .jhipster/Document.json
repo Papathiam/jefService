@@ -1,0 +1,39 @@
+{
+  "annotations": {
+    "changelogDate": "20260117145911"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "type",
+      "fieldType": "TypeDocument",
+      "fieldValidateRules": ["required"],
+      "fieldValues": "CNI,PASSPORT,DIPLOME,AUTRE"
+    },
+    {
+      "fieldName": "urlFichier",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "valide",
+      "fieldType": "Boolean"
+    },
+    {
+      "fieldName": "dateUpload",
+      "fieldType": "Instant"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Document",
+  "relationships": [
+    {
+      "otherEntityName": "technicien",
+      "relationshipName": "technicien",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

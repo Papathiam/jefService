@@ -1,0 +1,42 @@
+{
+  "annotations": {
+    "changelogDate": "20260117145910"
+  },
+  "applications": "*",
+  "dto": "mapstruct",
+  "fields": [
+    {
+      "fieldName": "nom",
+      "fieldType": "String",
+      "fieldValidateRules": ["required"]
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "actif",
+      "fieldType": "Boolean"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "ServiceJef",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "mission",
+      "relationshipName": "missions",
+      "relationshipSide": "right",
+      "relationshipType": "one-to-many"
+    },
+    {
+      "otherEntityName": "technicien",
+      "otherEntityRelationshipName": "serviceJefs",
+      "relationshipName": "techniciens",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-many"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

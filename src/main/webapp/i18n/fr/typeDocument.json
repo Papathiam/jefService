@@ -1,0 +1,11 @@
+{
+  "jefServiceApp": {
+    "TypeDocument": {
+      "null": "",
+      "CNI": "CNI",
+      "PASSPORT": "PASSPORT",
+      "DIPLOME": "DIPLOME",
+      "AUTRE": "AUTRE"
+    }
+  }
+}

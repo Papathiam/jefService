@@ -1,0 +1,10 @@
+{
+  "jefServiceApp": {
+    "MoyenPaiement": {
+      "null": "",
+      "WAVE": "WAVE",
+      "ORANGE": "ORANGE",
+      "FREE": "FREE"
+    }
+  }
+}

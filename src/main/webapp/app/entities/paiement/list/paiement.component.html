@@ -1,0 +1,128 @@
+<section class="entity-page">
+  <h2 id="page-heading" data-cy="PaiementHeading">
+    <span jhiTranslate="jefServiceApp.paiement.home.title">Paiements</span>
+
+    <div class="entity-actions d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="jefServiceApp.paiement.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-paiement"
+        [routerLink]="['/paiement/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="jefServiceApp.paiement.home.createLabel">Créer un nouveau Paiement</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (paiements().length === 0) {
+    <div class="alert alert-warning entity-empty" id="no-result">
+      <span jhiTranslate="jefServiceApp.paiement.home.notFound">Aucun Paiement trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities entity-table-wrap" id="entities">
+      <table class="table table-striped entity-table" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="id">
+              <div class="d-flex">
+                <span jhiTranslate="global.field.id">ID</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="montantTotal">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.paiement.montantTotal">Montant Total</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="commission">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.paiement.commission">Commission</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="montantTechnicien">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.paiement.montantTechnicien">Montant Technicien</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="moyenPaiement">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.paiement.moyenPaiement">Moyen Paiement</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="statut">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.paiement.statut">Statut</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="reference">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.paiement.reference">Reference</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (paiement of paiements(); track trackId(paiement)) {
+            <tr data-cy="entityTable">
+              <td>
+                <a [routerLink]="['/paiement', paiement.id, 'view']">{{ paiement.id }}</a>
+              </td>
+              <td>{{ paiement.montantTotal }}</td>
+              <td>{{ paiement.commission }}</td>
+              <td>{{ paiement.montantTechnicien }}</td>
+              <td [jhiTranslate]="'jefServiceApp.MoyenPaiement.' + (paiement.moyenPaiement ?? 'null')">
+                {{ { null: '', WAVE: 'WAVE', ORANGE: 'ORANGE', FREE: 'FREE' }[paiement.moyenPaiement ?? 'null'] }}
+              </td>
+              <td [jhiTranslate]="'jefServiceApp.StatutPaiement.' + (paiement.statut ?? 'null')">
+                {{ { null: '', INITIE: 'INITIE', CONFIRME: 'CONFIRME', ANNULE: 'ANNULE' }[paiement.statut ?? 'null'] }}
+              </td>
+              <td>{{ paiement.reference }}</td>
+              <td class="text-end">
+                <div class="btn-group entity-row-actions">
+                  <a [routerLink]="['/paiement', paiement.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/paiement', paiement.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(paiement)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

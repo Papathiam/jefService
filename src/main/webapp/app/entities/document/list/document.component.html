@@ -1,0 +1,123 @@
+<section class="entity-page">
+  <h2 id="page-heading" data-cy="DocumentHeading">
+    <span jhiTranslate="jefServiceApp.document.home.title">Documents</span>
+
+    <div class="entity-actions d-flex justify-content-end">
+      <button class="btn btn-info me-2" (click)="load()" [disabled]="isLoading">
+        <fa-icon icon="sync" [animation]="isLoading ? 'spin' : undefined"></fa-icon>
+        <span jhiTranslate="jefServiceApp.document.home.refreshListLabel">Actualiser la liste</span>
+      </button>
+
+      <button
+        id="jh-create-entity"
+        data-cy="entityCreateButton"
+        class="btn btn-primary jh-create-entity create-document"
+        [routerLink]="['/document/new']"
+      >
+        <fa-icon icon="plus"></fa-icon>
+        <span jhiTranslate="jefServiceApp.document.home.createLabel">Créer un nouveau Document</span>
+      </button>
+    </div>
+  </h2>
+
+  <jhi-alert-error />
+
+  <jhi-alert />
+
+  @if (documents().length === 0) {
+    <div class="alert alert-warning entity-empty" id="no-result">
+      <span jhiTranslate="jefServiceApp.document.home.notFound">Aucun Document trouvé</span>
+    </div>
+  } @else {
+    <div class="table-responsive table-entities entity-table-wrap" id="entities">
+      <table class="table table-striped entity-table" aria-describedby="page-heading">
+        <thead>
+          <tr jhiSort [(sortState)]="sortState" (sortChange)="navigateToWithComponentValues($event)">
+            <th scope="col" jhiSortBy="type">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.document.type">Type</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="valide">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.document.valide">Valide</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="dateUpload">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.document.dateUpload">Date Upload</span>
+
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col" jhiSortBy="technicien.id">
+              <div class="d-flex">
+                <span jhiTranslate="jefServiceApp.document.technicien">Technicien</span>
+                <fa-icon class="p-1" icon="sort"></fa-icon>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (document of documents(); track trackId(document)) {
+            <tr data-cy="entityTable">
+              <td [jhiTranslate]="'jefServiceApp.TypeDocument.' + (document.type ?? 'null')">
+                {{ { null: '', CNI: 'CNI', PASSPORT: 'PASSPORT', DIPLOME: 'DIPLOME', AUTRE: 'AUTRE' }[document.type ?? 'null'] }}
+              </td>
+              <td>{{ document.valide }}</td>
+              <td>{{ document.dateUpload | formatMediumDatetime }}</td>
+              <td>
+                @if (document.technicien) {
+                  <div>
+                    <a [routerLink]="['/technicien', document.technicien.id, 'view']">{{ document.technicien.id }}</a>
+                  </div>
+                }
+              </td>
+              <td class="text-end">
+                <div class="btn-group entity-row-actions">
+                  <button
+                    type="button"
+                    class="btn btn-outline-secondary btn-sm"
+                    (click)="preview(document)"
+                    [disabled]="downloadingId() === document.id"
+                  >
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline">Visualiser</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-outline-success btn-sm"
+                    (click)="download(document)"
+                    [disabled]="downloadingId() === document.id"
+                  >
+                    <fa-icon icon="save"></fa-icon>
+                    <span class="d-none d-md-inline">Télécharger</span>
+                  </button>
+                  <a [routerLink]="['/document', document.id, 'view']" class="btn btn-info btn-sm" data-cy="entityDetailsButton">
+                    <fa-icon icon="eye"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.view">Voir</span>
+                  </a>
+
+                  <a [routerLink]="['/document', document.id, 'edit']" class="btn btn-primary btn-sm" data-cy="entityEditButton">
+                    <fa-icon icon="pencil-alt"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Editer</span>
+                  </a>
+
+                  <button type="submit" (click)="delete(document)" class="btn btn-danger btn-sm" data-cy="entityDeleteButton">
+                    <fa-icon icon="times"></fa-icon>
+                    <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Supprimer</span>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</section>

@@ -1,0 +1,11 @@
+id;nom;prenom;tarif_min;tarif_max;latitude;longitude;disponible;statut_validation;note_moyenne
+1;dense au cas où;gens;13139.77;28360.06;4841.64;1271.89;false;REFUSE;19745.33
+2;étudier antique amorphe;lectorat;28844.14;28184.5;135.34;25669.8;false;VALIDE;14850.75
+3;commissionnaire;porte-parole;13804.37;5528.6;19035.96;16222.56;false;EN_ATTENTE;21582.41
+4;à peu près répartir avant de;songer pin-pon de crainte que;21200.66;10141;11050.61;19597.48;false;REFUSE;4766.13
+5;multiple ding;secours vu que;10636.95;9947.11;25660.19;21674.89;false;REFUSE;12748.04
+6;triangulaire en plus de étant donné que;âcre jusque aussi;11191.93;269;29934.96;10639.22;true;EN_ATTENTE;24419.61
+7;tsoin-tsoin environ ding;au-dessus de lectorat;30319.7;14289.61;24056.78;17936.27;true;REFUSE;4417.49
+8;triste;parce que;30981.26;13429.97;20979.32;27184.4;false;EN_ATTENTE;29199.39
+9;aux alentours de blablabla à la merci;assez;28604.11;25583.89;29121.34;20758.02;false;REFUSE;23171.94
+10;bientôt étant donné que défendre;conseil d’administration;22556.02;15122.83;3504.85;31580.7;true;VALIDE;1966.26

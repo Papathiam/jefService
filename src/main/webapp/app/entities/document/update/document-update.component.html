@@ -1,0 +1,99 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2 id="jhi-document-heading" data-cy="DocumentCreateUpdateHeading" jhiTranslate="jefServiceApp.document.home.createOrEditLabel">
+        Créer ou éditer un Document
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @let typeRef = editForm.get('type')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_type" jhiTranslate="jefServiceApp.document.type">Type</label>
+          <select class="form-control" name="type" formControlName="type" id="field_type" data-cy="type">
+            <option [ngValue]="null">{{ 'jefServiceApp.TypeDocument.null' | translate }}</option>
+            @for (typeDocument of typeDocumentValues; track $index) {
+              <option [value]="typeDocument">{{ 'jefServiceApp.TypeDocument.' + typeDocument | translate }}</option>
+            }
+          </select>
+          @if (typeRef.invalid && (typeRef.dirty || typeRef.touched)) {
+            <div>
+              @if (editForm.get('type')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_valide" jhiTranslate="jefServiceApp.document.valide">Valide</label>
+          <input type="checkbox" class="form-check" name="valide" id="field_valide" data-cy="valide" formControlName="valide" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_dateUpload" jhiTranslate="jefServiceApp.document.dateUpload">Date Upload</label>
+          <div class="d-flex">
+            <input
+              id="field_dateUpload"
+              data-cy="dateUpload"
+              type="datetime-local"
+              class="form-control"
+              name="dateUpload"
+              formControlName="dateUpload"
+              placeholder="YYYY-MM-DD HH:mm"
+            />
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_technicien" jhiTranslate="jefServiceApp.document.technicien">Technicien</label>
+          <select
+            class="form-control"
+            id="field_technicien"
+            data-cy="technicien"
+            name="technicien"
+            formControlName="technicien"
+            [compareWith]="compareTechnicien"
+          >
+            <option [ngValue]="null"></option>
+            @for (technicienOption of techniciensSharedCollection; track $index) {
+              <option [ngValue]="technicienOption">{{ formatTechnicienLabel(technicienOption) }}</option>
+            }
+          </select>
+          <small class="text-muted d-block mt-1">Technicien concerné: {{ selectedTechnicienLabel }}</small>
+          @if (document?.technicien?.statutValidation) {
+            <small class="text-muted d-block mt-1"> Statut technicien: {{ document?.technicien?.statutValidation }} </small>
+          }
+        </div>
+      </div>
+
+      <div>
+        @if (document?.id) {
+          <button
+            type="button"
+            class="btn btn-outline-success me-2"
+            (click)="validateCurrentDocument()"
+            [disabled]="isValidating || editForm.get('valide')?.value === true"
+          >
+            <fa-icon icon="check"></fa-icon>&nbsp;<span>{{ isValidating ? 'Validation...' : 'Valider le document' }}</span>
+          </button>
+        }
+
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

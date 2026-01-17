@@ -1,0 +1,33 @@
+{
+  "jefServiceApp": {
+    "mission": {
+      "home": {
+        "title": "Missions",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Mission",
+        "createOrEditLabel": "Créer ou éditer un Mission",
+        "notFound": "Aucun Mission trouvé"
+      },
+      "created": "Un nouveau Mission a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Mission avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Mission avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Mission {{ id }} ?"
+      },
+      "detail": {
+        "title": "Mission"
+      },
+      "id": "ID",
+      "description": "Description",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "statut": "Statut",
+      "prixPropose": "Prix Propose",
+      "dateCreation": "Date Creation",
+      "paiement": "Paiement",
+      "serviceJef": "Service Jef",
+      "client": "Client",
+      "technicien": "Technicien"
+    }
+  }
+}

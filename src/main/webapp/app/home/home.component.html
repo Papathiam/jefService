@@ -1,0 +1,33 @@
+<div class="home-shell">
+  <section class="welcome-card">
+    <p class="kicker">Console opérationnelle</p>
+    <h2>Suivi des interventions en temps réel</h2>
+    <p>Centralisez la gestion des clients, techniciens, missions et paiements avec une vue métier claire de bout en bout.</p>
+    @if (account() !== null) {
+      @if (account(); as accountRef) {
+        <div class="connected-chip" id="home-logged-message">Connecté: {{ accountRef.login }}</div>
+      }
+    } @else {
+      <button class="btn btn-success" type="button" (click)="login()">Se connecter</button>
+    }
+  </section>
+
+  <section class="quick-grid">
+    <a class="quick-card" routerLink="/mission">
+      <h3>Missions</h3>
+      <p>Création, affectation et suivi des statuts.</p>
+    </a>
+    <a class="quick-card" routerLink="/technicien">
+      <h3>Techniciens</h3>
+      <p>Validation profils, disponibilité et performance.</p>
+    </a>
+    <a class="quick-card" routerLink="/paiement">
+      <h3>Paiements</h3>
+      <p>Contrôle des montants, commissions et références.</p>
+    </a>
+    <a class="quick-card" routerLink="/document">
+      <h3>Documents</h3>
+      <p>Suivi des justificatifs et conformité administrative.</p>
+    </a>
+  </section>
+</div>

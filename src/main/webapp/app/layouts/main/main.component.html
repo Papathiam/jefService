@@ -1,0 +1,29 @@
+@if (isAuthPage()) {
+  <div class="auth-shell">
+    <router-outlet />
+  </div>
+} @else {
+  <div class="app-shell">
+    <jhi-navbar />
+    <div class="app-content">
+      <header class="workspace-header">
+        <div>
+          <p class="workspace-kicker">Espace de gestion</p>
+          <h1 class="workspace-title">Jef Service</h1>
+        </div>
+        <div class="workspace-tools">
+          <span class="workspace-date">{{ todayLabel }}</span>
+          @if (account() !== null) {
+            <button type="button" class="logout-btn" (click)="logout()">
+              <span>Déconnexion</span>
+            </button>
+          }
+        </div>
+      </header>
+      <div class="card jh-card app-card">
+        <router-outlet />
+      </div>
+      <jhi-footer />
+    </div>
+  </div>
+}

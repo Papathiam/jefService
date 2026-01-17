@@ -1,0 +1,90 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (mission(); as missionRef) {
+      <div>
+        <h2 data-cy="missionDetailsHeading"><span jhiTranslate="jefServiceApp.mission.detail.title">Mission</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ missionRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.mission.description">Description</span></dt>
+          <dd>
+            <span>{{ missionRef.description }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.mission.latitude">Latitude</span></dt>
+          <dd>
+            <span>{{ missionRef.latitude }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.mission.longitude">Longitude</span></dt>
+          <dd>
+            <span>{{ missionRef.longitude }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.mission.statut">Statut</span></dt>
+          <dd>
+            <span [jhiTranslate]="'jefServiceApp.StatutMission.' + (missionRef.statut ?? 'null')">{{
+              { null: '', EN_ATTENTE: 'EN_ATTENTE', ACCEPTEE: 'ACCEPTEE', EN_COURS: 'EN_COURS', TERMINEE: 'TERMINEE', PAYEE: 'PAYEE' }[
+                missionRef.statut ?? 'null'
+              ]
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.mission.prixPropose">Prix Propose</span></dt>
+          <dd>
+            <span>{{ missionRef.prixPropose }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.mission.dateCreation">Date Creation</span></dt>
+          <dd>
+            <span>{{ missionRef.dateCreation | formatMediumDatetime }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.mission.paiement">Paiement</span></dt>
+          <dd>
+            @if (mission()!.paiement) {
+              <div>
+                <a [routerLink]="['/paiement', mission()!.paiement?.id, 'view']">{{ missionRef.paiement?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.mission.serviceJef">Service Jef</span></dt>
+          <dd>
+            @if (mission()!.serviceJef) {
+              <div>
+                <a [routerLink]="['/service-jef', mission()!.serviceJef?.id, 'view']">{{ missionRef.serviceJef?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.mission.client">Client</span></dt>
+          <dd>
+            @if (mission()!.client) {
+              <div>
+                <a [routerLink]="['/client', mission()!.client?.id, 'view']">{{ missionRef.client?.id }}</a>
+              </div>
+            }
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.mission.technicien">Technicien</span></dt>
+          <dd>
+            @if (mission()!.technicien) {
+              <div>
+                <a [routerLink]="['/technicien', mission()!.technicien?.id, 'view']">{{ missionRef.technicien?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/mission', missionRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

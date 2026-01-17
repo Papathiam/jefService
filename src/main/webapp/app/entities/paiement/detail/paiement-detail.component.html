@@ -1,0 +1,58 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (paiement(); as paiementRef) {
+      <div>
+        <h2 data-cy="paiementDetailsHeading"><span jhiTranslate="jefServiceApp.paiement.detail.title">Paiement</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ paiementRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.paiement.montantTotal">Montant Total</span></dt>
+          <dd>
+            <span>{{ paiementRef.montantTotal }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.paiement.commission">Commission</span></dt>
+          <dd>
+            <span>{{ paiementRef.commission }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.paiement.montantTechnicien">Montant Technicien</span></dt>
+          <dd>
+            <span>{{ paiementRef.montantTechnicien }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.paiement.moyenPaiement">Moyen Paiement</span></dt>
+          <dd>
+            <span [jhiTranslate]="'jefServiceApp.MoyenPaiement.' + (paiementRef.moyenPaiement ?? 'null')">{{
+              { null: '', WAVE: 'WAVE', ORANGE: 'ORANGE', FREE: 'FREE' }[paiementRef.moyenPaiement ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.paiement.statut">Statut</span></dt>
+          <dd>
+            <span [jhiTranslate]="'jefServiceApp.StatutPaiement.' + (paiementRef.statut ?? 'null')">{{
+              { null: '', INITIE: 'INITIE', CONFIRME: 'CONFIRME', ANNULE: 'ANNULE' }[paiementRef.statut ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.paiement.reference">Reference</span></dt>
+          <dd>
+            <span>{{ paiementRef.reference }}</span>
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/paiement', paiementRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

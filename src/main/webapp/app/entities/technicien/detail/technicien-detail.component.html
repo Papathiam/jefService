@@ -1,0 +1,112 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (technicien(); as technicienRef) {
+      <div>
+        <h2 data-cy="technicienDetailsHeading"><span jhiTranslate="jefServiceApp.technicien.detail.title">Technicien</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ technicienRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.nom">Nom</span></dt>
+          <dd>
+            <span>{{ technicienRef.nom }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.prenom">Prenom</span></dt>
+          <dd>
+            <span>{{ technicienRef.prenom }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.tarifMin">Tarif Min</span></dt>
+          <dd>
+            <span>{{ technicienRef.tarifMin }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.tarifMax">Tarif Max</span></dt>
+          <dd>
+            <span>{{ technicienRef.tarifMax }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.latitude">Latitude</span></dt>
+          <dd>
+            <span>{{ technicienRef.latitude }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.longitude">Longitude</span></dt>
+          <dd>
+            <span>{{ technicienRef.longitude }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.disponible">Disponible</span></dt>
+          <dd>
+            <span>{{ technicienRef.disponible }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.statutValidation">Statut Validation</span></dt>
+          <dd>
+            <span [jhiTranslate]="'jefServiceApp.StatutValidation.' + (technicienRef.statutValidation ?? 'null')">{{
+              { null: '', EN_ATTENTE: 'EN_ATTENTE', VALIDE: 'VALIDE', REFUSE: 'REFUSE' }[technicienRef.statutValidation ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.noteMoyenne">Note Moyenne</span></dt>
+          <dd>
+            <span>{{ technicienRef.noteMoyenne }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.user">User</span></dt>
+          <dd>
+            <span>{{ technicienRef.user?.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.technicien.serviceJefs">Service Jefs</span></dt>
+          <dd>
+            @for (serviceJefs of technicienRef.serviceJefs; track $index; let last = $last) {
+              <span>
+                <a [routerLink]="['/service-jef', serviceJefs.id, 'view']">{{ serviceJefs?.id }}</a
+                >{{ last ? '' : ', ' }}
+              </span>
+            }
+          </dd>
+        </dl>
+
+        @if (
+          technicienRef.latitude !== null &&
+          technicienRef.latitude !== undefined &&
+          technicienRef.longitude !== null &&
+          technicienRef.longitude !== undefined
+        ) {
+          <div class="card mt-3 mb-3">
+            <div class="card-header">
+              <strong>Position du technicien</strong>
+            </div>
+            <div class="card-body">
+              <p class="mb-2">Latitude: {{ technicienRef.latitude }} | Longitude: {{ technicienRef.longitude }}</p>
+              <iframe
+                [src]="getMapEmbedUrl(technicienRef.latitude, technicienRef.longitude)"
+                width="100%"
+                height="350"
+                style="border: 1px solid #dbe3e8; border-radius: 8px"
+                loading="lazy"
+                title="Carte de position du technicien"
+              ></iframe>
+              @if (getMapExternalUrl(technicienRef.latitude, technicienRef.longitude); as mapLink) {
+                <div class="mt-2">
+                  <a [href]="mapLink" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">
+                    Ouvrir la carte en plein écran
+                  </a>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/technicien', technicienRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

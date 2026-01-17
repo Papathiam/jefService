@@ -1,0 +1,80 @@
+{
+  "jefServiceApp": {
+    "client": {
+      "home": {
+        "title": "Clients",
+        "subtitle": "Vue opérationnelle",
+        "description": "Prenez des décisions plus rapides grâce à une vue modernisée et prête pour le terrain.",
+        "refreshListLabel": "Actualiser la liste",
+        "createLabel": "Créer un nouveau Client",
+        "createOrEditLabel": "Créer ou éditer un Client",
+        "notFound": "Aucun Client trouvé",
+        "noSearchResult": "Aucun client ne correspond à votre recherche",
+        "searchLabel": "Recherche rapide",
+        "searchPlaceholder": "Adresse, utilisateur ou coordonnées...",
+        "searchClear": "Effacer la recherche",
+        "addressSearchLabel": "Recherche par adresse",
+        "addressSearchPlaceholder": "Rue, ville ou repère",
+        "userSearchLabel": "Recherche par utilisateur",
+        "userSearchPlaceholder": "Nom ou login de l'utilisateur",
+        "table": {
+          "coordinates": "Coordonnées GPS",
+          "actions": "Actions"
+        },
+        "viewToggle": "Choisir l'affichage",
+        "view": {
+          "table": "Tableau",
+          "grid": "Cartes"
+        },
+        "sidebar": {
+          "statsTitle": "Indicateurs",
+          "filtersTitle": "Filtres avancés",
+          "topLabel": "Derniers clients chargés",
+          "main": "Principal",
+          "inbox": "Inboxes"
+        },
+        "quickStats": {
+          "totalLabel": "Total référencé",
+          "totalHint": "Toutes les pages confondues",
+          "pageLabel": "Clients chargés",
+          "pageHint": "Sur la page active",
+          "geoLabel": "Coordonnées disponibles",
+          "geoHint": "avec des coordonnées GPS"
+        },
+        "badges": {
+          "geoReady": "Prêt pour la carto",
+          "geoMissing": "Coordonnées manquantes"
+        },
+        "noAddress": "Adresse non renseignée",
+        "notAssigned": "Non attribué"
+      },
+      "created": "Un nouveau Client a été créé avec l'identifiant {{ param }}",
+      "updated": "Le Client avec l'identifiant {{ param }} a été mis à jour",
+      "deleted": "Le Client avec l'identifiant {{ param }} a été supprimé",
+      "delete": {
+        "question": "Êtes-vous certain de vouloir supprimer le Client {{ id }} ?"
+      },
+      "detail": {
+        "title": "Client",
+        "infoTitle": "Informations générales",
+        "mapTitle": "Carte du Sénégal",
+        "mapSubtitle": "Localisation du client",
+        "mapEmpty": "Aucune coordonnée disponible pour tracer ce client",
+        "mapStatus": "Statut",
+        "refreshMap": "Rafraîchir la carte",
+        "mapOpen": "Voir sur la carte",
+        "noAddress": "Adresse non renseignée",
+        "badges": {
+          "geoReady": "Coordonnées confirmées",
+          "geoMissing": "Coordonnées manquantes"
+        }
+      },
+      "id": "ID",
+      "latitude": "Latitude",
+      "longitude": "Longitude",
+      "adresse": "Adresse",
+      "user": "User",
+      "mission": "Mission"
+    }
+  }
+}

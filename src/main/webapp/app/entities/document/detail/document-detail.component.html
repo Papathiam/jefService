@@ -1,0 +1,64 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    @if (document(); as documentRef) {
+      <div>
+        <h2 data-cy="documentDetailsHeading"><span jhiTranslate="jefServiceApp.document.detail.title">Document</span></h2>
+
+        <hr />
+
+        <jhi-alert-error />
+
+        <jhi-alert />
+
+        <dl class="row-md jh-entity-details">
+          <dt><span jhiTranslate="global.field.id">ID</span></dt>
+          <dd>
+            <span>{{ documentRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.document.type">Type</span></dt>
+          <dd>
+            <span [jhiTranslate]="'jefServiceApp.TypeDocument.' + (documentRef.type ?? 'null')">{{
+              { null: '', CNI: 'CNI', PASSPORT: 'PASSPORT', DIPLOME: 'DIPLOME', AUTRE: 'AUTRE' }[documentRef.type ?? 'null']
+            }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.document.valide">Valide</span></dt>
+          <dd>
+            <span>{{ documentRef.valide }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.document.dateUpload">Date Upload</span></dt>
+          <dd>
+            <span>{{ documentRef.dateUpload | formatMediumDatetime }}</span>
+          </dd>
+          <dt>Fichier</dt>
+          <dd>
+            <span>{{ documentRef.fileName || 'document-' + documentRef.id }}</span>
+          </dd>
+          <dt><span jhiTranslate="jefServiceApp.document.technicien">Technicien</span></dt>
+          <dd>
+            @if (document()!.technicien) {
+              <div>
+                <a [routerLink]="['/technicien', document()!.technicien?.id, 'view']">{{ documentRef.technicien?.id }}</a>
+              </div>
+            }
+          </dd>
+        </dl>
+
+        <button type="submit" (click)="previousState()" class="btn btn-info" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+
+        <button type="button" [routerLink]="['/document', documentRef.id, 'edit']" class="btn btn-primary">
+          <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+
+        <button type="button" class="btn btn-outline-secondary" (click)="preview()" [disabled]="downloading()">
+          <fa-icon icon="eye"></fa-icon>&nbsp;<span>Visualiser</span>
+        </button>
+
+        <button type="button" class="btn btn-outline-success" (click)="download()" [disabled]="downloading()">
+          <fa-icon icon="save"></fa-icon>&nbsp;<span>Télécharger</span>
+        </button>
+      </div>
+    }
+  </div>
+</div>

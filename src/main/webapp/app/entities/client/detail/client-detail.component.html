@@ -1,0 +1,122 @@
+@if (client(); as clientRef) {
+  <section class="client-detail-shell">
+    <aside class="client-detail-hero">
+      <p class="eyebrow" jhiTranslate="jefServiceApp.client.detail.title">Client</p>
+      <h1 data-cy="clientDetailsHeading">#{{ clientRef.id }}</h1>
+      <p class="client-detail-hero__subtitle">
+        {{ clientRef.adresse ?? ('jefServiceApp.client.detail.noAddress' | translate) }}
+      </p>
+      <div class="client-detail-hero__chips">
+        <span>
+          {{
+            hasCoordinates(clientRef)
+              ? ('jefServiceApp.client.detail.badges.geoReady' | translate)
+              : ('jefServiceApp.client.detail.badges.geoMissing' | translate)
+          }}
+        </span>
+        <span>
+          {{
+            clientRef.user?.id
+              ? ('jefServiceApp.client.user' | translate) + ' #' + clientRef.user?.id
+              : ('jefServiceApp.client.home.notAssigned' | translate)
+          }}
+        </span>
+      </div>
+      <div class="client-detail-hero__actions">
+        <button class="btn btn-outline-light" (click)="previousState()" data-cy="entityDetailsBackButton">
+          <fa-icon icon="arrow-left"></fa-icon>
+          <span jhiTranslate="entity.action.back">Retour</span>
+        </button>
+        <button class="btn btn-light" [routerLink]="['/client', clientRef.id, 'edit']">
+          <fa-icon icon="pencil-alt"></fa-icon>
+          <span jhiTranslate="entity.action.edit">Editer</span>
+        </button>
+      </div>
+    </aside>
+
+    <section class="client-detail-panel card shadow-sm">
+      <h2 jhiTranslate="jefServiceApp.client.detail.infoTitle">Informations générales</h2>
+      <dl>
+        <div>
+          <dt jhiTranslate="global.field.id">ID</dt>
+          <dd>#{{ clientRef.id }}</dd>
+        </div>
+        <div>
+          <dt jhiTranslate="jefServiceApp.client.adresse">Adresse</dt>
+          <dd>{{ clientRef.adresse ?? ('jefServiceApp.client.detail.noAddress' | translate) }}</dd>
+        </div>
+        <div>
+          <dt jhiTranslate="jefServiceApp.client.user">Utilisateur</dt>
+          <dd>
+            @if (displayUser(clientRef.user); as userLabel) {
+              {{ userLabel }}
+            } @else {
+              <span jhiTranslate="jefServiceApp.client.home.notAssigned">Non attribué</span>
+            }
+          </dd>
+        </div>
+        <div>
+          <dt jhiTranslate="jefServiceApp.client.latitude">Latitude</dt>
+          <dd>{{ clientRef.latitude ?? '-' }}</dd>
+        </div>
+        <div>
+          <dt jhiTranslate="jefServiceApp.client.longitude">Longitude</dt>
+          <dd>{{ clientRef.longitude ?? '-' }}</dd>
+        </div>
+      </dl>
+
+      <div class="client-detail-panel__map card">
+        <div class="client-detail-panel__map-header">
+          <div>
+            <p class="client-detail-card__eyebrow" jhiTranslate="jefServiceApp.client.detail.mapTitle">Carte du Sénégal</p>
+            <h3 jhiTranslate="jefServiceApp.client.detail.mapSubtitle">Localisation du client</h3>
+          </div>
+          @if (getMapExternalUrl(clientRef); as mapLink) {
+            <a class="btn btn-sm btn-primary" [href]="mapLink" target="_blank" rel="noopener noreferrer">
+              <fa-icon icon="map-marker-alt"></fa-icon>
+              <span jhiTranslate="jefServiceApp.client.detail.mapOpen">Voir sur la carte</span>
+            </a>
+          }
+        </div>
+
+        <div class="client-detail-card__map-wrapper">
+          @if (getMapEmbedUrl(clientRef); as mapUrl) {
+            <iframe
+              [src]="mapUrl"
+              width="100%"
+              height="320"
+              class="client-map-embed"
+              loading="lazy"
+              title="Localisation du client"
+            ></iframe>
+          } @else {
+            <div class="client-map__overlay" jhiTranslate="jefServiceApp.client.detail.mapEmpty">
+              Coordonnées manquantes pour afficher cette carte
+            </div>
+          }
+        </div>
+
+        <div class="client-detail-card__map-footer">
+          <div>
+            <span jhiTranslate="jefServiceApp.client.latitude">Latitude</span>
+            <strong>{{ clientRef.latitude ?? '-' }}</strong>
+          </div>
+          <div>
+            <span jhiTranslate="jefServiceApp.client.longitude">Longitude</span>
+            <strong>{{ clientRef.longitude ?? '-' }}</strong>
+          </div>
+          <div>
+            <span jhiTranslate="jefServiceApp.client.detail.mapStatus">Statut</span>
+            <strong>
+              {{
+                hasCoordinates(clientRef)
+                  ? ('jefServiceApp.client.detail.badges.geoReady' | translate)
+                  : ('jefServiceApp.client.detail.badges.geoMissing' | translate)
+              }}
+            </strong>
+          </div>
+        </div>
+      </div>
+    </section>
+  </section>
+}

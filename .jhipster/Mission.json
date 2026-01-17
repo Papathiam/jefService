@@ -1,0 +1,66 @@
+{
+  "annotations": {
+    "changelogDate": "20260117145912"
+  },
+  "applications": "*",
+  "fields": [
+    {
+      "fieldName": "description",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "latitude",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "longitude",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "statut",
+      "fieldType": "StatutMission",
+      "fieldValues": "EN_ATTENTE,ACCEPTEE,EN_COURS,TERMINEE,PAYEE"
+    },
+    {
+      "fieldName": "prixPropose",
+      "fieldType": "Double"
+    },
+    {
+      "fieldName": "dateCreation",
+      "fieldType": "Instant"
+    }
+  ],
+  "jpaMetamodelFiltering": true,
+  "name": "Mission",
+  "pagination": "pagination",
+  "relationships": [
+    {
+      "otherEntityName": "paiement",
+      "otherEntityRelationshipName": "mission",
+      "relationshipName": "paiement",
+      "relationshipSide": "left",
+      "relationshipType": "one-to-one"
+    },
+    {
+      "otherEntityName": "serviceJef",
+      "otherEntityRelationshipName": "missions",
+      "relationshipName": "serviceJef",
+      "relationshipSide": "left",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "client",
+      "relationshipName": "client",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "technicien",
+      "relationshipName": "technicien",
+      "relationshipSide": "right",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "searchEngine": "no",
+  "service": "serviceImpl"
+}

@@ -1,0 +1,10 @@
+{
+  "jefServiceApp": {
+    "StatutPaiement": {
+      "null": "",
+      "INITIE": "INITIE",
+      "CONFIRME": "CONFIRME",
+      "ANNULE": "ANNULE"
+    }
+  }
+}

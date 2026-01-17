@@ -1,0 +1,183 @@
+<div class="d-flex justify-content-center">
+  <div class="col-8">
+    <form name="editForm" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+      <h2
+        id="jhi-technicien-heading"
+        data-cy="TechnicienCreateUpdateHeading"
+        jhiTranslate="jefServiceApp.technicien.home.createOrEditLabel"
+      >
+        Créer ou éditer un Technicien
+      </h2>
+
+      <div>
+        <jhi-alert-error />
+
+        @if (editForm.controls.id.value !== null) {
+          <div class="mb-3">
+            <label class="form-label" for="field_id" jhiTranslate="jefServiceApp.technicien.id">ID</label>
+            <input type="number" class="form-control" name="id" id="field_id" data-cy="id" formControlName="id" [readonly]="true" />
+          </div>
+        }
+
+        @let nomRef = editForm.get('nom')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_nom" jhiTranslate="jefServiceApp.technicien.nom">Nom</label>
+          <input type="text" class="form-control" name="nom" id="field_nom" data-cy="nom" formControlName="nom" />
+          @if (nomRef.invalid && (nomRef.dirty || nomRef.touched)) {
+            <div>
+              @if (editForm.get('nom')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let prenomRef = editForm.get('prenom')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_prenom" jhiTranslate="jefServiceApp.technicien.prenom">Prenom</label>
+          <input type="text" class="form-control" name="prenom" id="field_prenom" data-cy="prenom" formControlName="prenom" />
+          @if (prenomRef.invalid && (prenomRef.dirty || prenomRef.touched)) {
+            <div>
+              @if (editForm.get('prenom')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+            </div>
+          }
+        </div>
+
+        @let tarifMinRef = editForm.get('tarifMin')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_tarifMin" jhiTranslate="jefServiceApp.technicien.tarifMin">Tarif Min</label>
+          <input type="number" class="form-control" name="tarifMin" id="field_tarifMin" data-cy="tarifMin" formControlName="tarifMin" />
+          @if (tarifMinRef.invalid && (tarifMinRef.dirty || tarifMinRef.touched)) {
+            <div>
+              @if (editForm.get('tarifMin')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('tarifMin')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        @let tarifMaxRef = editForm.get('tarifMax')!;
+        <div class="mb-3">
+          <label class="form-label" for="field_tarifMax" jhiTranslate="jefServiceApp.technicien.tarifMax">Tarif Max</label>
+          <input type="number" class="form-control" name="tarifMax" id="field_tarifMax" data-cy="tarifMax" formControlName="tarifMax" />
+          @if (tarifMaxRef.invalid && (tarifMaxRef.dirty || tarifMaxRef.touched)) {
+            <div>
+              @if (editForm.get('tarifMax')?.errors?.required) {
+                <small class="form-text text-danger" jhiTranslate="entity.validation.required">Ce champ est obligatoire.</small>
+              }
+              <small
+                class="form-text text-danger"
+                [hidden]="!editForm.get('tarifMax')?.errors?.number"
+                jhiTranslate="entity.validation.number"
+                >Ce champ doit être un nombre.</small
+              >
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_latitude" jhiTranslate="jefServiceApp.technicien.latitude">Latitude</label>
+          <input type="number" class="form-control" name="latitude" id="field_latitude" data-cy="latitude" formControlName="latitude" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_longitude" jhiTranslate="jefServiceApp.technicien.longitude">Longitude</label>
+          <input type="number" class="form-control" name="longitude" id="field_longitude" data-cy="longitude" formControlName="longitude" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_disponible" jhiTranslate="jefServiceApp.technicien.disponible">Disponible</label>
+          <input
+            type="checkbox"
+            class="form-check"
+            name="disponible"
+            id="field_disponible"
+            data-cy="disponible"
+            formControlName="disponible"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_statutValidation" jhiTranslate="jefServiceApp.technicien.statutValidation"
+            >Statut Validation</label
+          >
+          <select
+            class="form-control"
+            name="statutValidation"
+            formControlName="statutValidation"
+            id="field_statutValidation"
+            data-cy="statutValidation"
+          >
+            <option [ngValue]="null">{{ 'jefServiceApp.StatutValidation.null' | translate }}</option>
+            @for (statutValidation of statutValidationValues; track $index) {
+              <option [value]="statutValidation">{{ 'jefServiceApp.StatutValidation.' + statutValidation | translate }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_noteMoyenne" jhiTranslate="jefServiceApp.technicien.noteMoyenne">Note Moyenne</label>
+          <input
+            type="number"
+            class="form-control"
+            name="noteMoyenne"
+            id="field_noteMoyenne"
+            data-cy="noteMoyenne"
+            formControlName="noteMoyenne"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="field_user" jhiTranslate="jefServiceApp.technicien.user">User</label>
+          <select class="form-control" id="field_user" data-cy="user" name="user" formControlName="user" [compareWith]="compareUser">
+            <option [ngValue]="null"></option>
+            @for (userOption of usersSharedCollection; track $index) {
+              <option [ngValue]="userOption">{{ userOption.id }}</option>
+            }
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label for="field_serviceJefs" jhiTranslate="jefServiceApp.technicien.serviceJefs">Service Jefs</label>
+          <select
+            class="form-control"
+            id="field_serviceJefs"
+            data-cy="serviceJefs"
+            multiple
+            name="serviceJefs"
+            formControlName="serviceJefs"
+            [compareWith]="compareServiceJef"
+          >
+            @for (serviceJefOption of serviceJefsSharedCollection; track $index) {
+              <option [ngValue]="serviceJefOption">{{ serviceJefOption.id }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div>
+        <button type="button" id="cancel-save" data-cy="entityCreateCancelButton" class="btn btn-secondary" (click)="previousState()">
+          <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Annuler</span>
+        </button>
+
+        <button
+          type="submit"
+          id="save-entity"
+          data-cy="entityCreateSaveButton"
+          [disabled]="editForm.invalid || isSaving"
+          class="btn btn-primary"
+        >
+          <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Sauvegarder</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

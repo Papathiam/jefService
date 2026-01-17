@@ -1,0 +1,246 @@
+@import 'bootstrap/scss/functions';
+@import 'bootstrap/scss/variables';
+
+:host {
+  --sidebar-bg: linear-gradient(180deg, #f9fbfc 0%, #f0f5f7 100%);
+  --sidebar-border: #d7e2e8;
+  --item-text: #173342;
+  --item-muted: #6b7f8c;
+  --item-hover: #e8f0f5;
+  --item-active: linear-gradient(120deg, #1a9154 0%, #2bb673 100%);
+  --item-active-text: #ffffff;
+}
+
+.mobile-topbar {
+  display: none;
+}
+
+.sidebar-overlay {
+  display: none;
+}
+
+.sidebar {
+  color: var(--item-text);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+}
+
+.sidebar-header {
+  padding: 1.25rem 1rem 1rem;
+  border-bottom: 1px solid var(--sidebar-border);
+}
+
+.brand {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #173342;
+}
+
+.brand-block {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.brand-text {
+  font-size: 1.03rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.brand-version {
+  font-size: 0.76rem;
+  color: var(--item-muted);
+}
+
+.sidebar-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem 0.75rem 1rem;
+}
+
+.sidebar-section + .sidebar-section {
+  margin-top: 1rem;
+}
+
+.section-title {
+  margin: 0 0 0.45rem;
+  color: var(--item-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.menu-item {
+  text-decoration: none;
+  color: var(--item-text);
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.62rem 0.72rem;
+  border-radius: 12px;
+  margin-bottom: 0.25rem;
+  transition:
+    background-color 150ms ease,
+    transform 150ms ease;
+  font-weight: 600;
+}
+
+.menu-item:hover {
+  background: var(--item-hover);
+  color: #102834;
+  transform: translateX(1px);
+}
+
+.menu-item.active {
+  background: var(--item-active);
+  color: var(--item-active-text);
+  box-shadow: 0 8px 18px rgba(35, 164, 104, 0.24);
+}
+
+.menu-item.compact {
+  margin-bottom: 0.15rem;
+  font-size: 0.92rem;
+}
+
+.sidebar-footer {
+  padding: 0.9rem 0.75rem 1rem;
+  border-top: 1px solid var(--sidebar-border);
+  background: linear-gradient(140deg, rgba(16, 71, 94, 0.04), rgba(25, 137, 86, 0.08));
+}
+
+.languages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 0.6rem;
+}
+
+.lang-chip {
+  border: 1px solid #c5d4dd;
+  background: #fff;
+  color: #244252;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.account-card {
+  border: 1px solid var(--sidebar-border);
+  border-radius: 14px;
+  padding: 0.45rem;
+  background: #fff;
+  box-shadow: 0 8px 20px rgba(13, 50, 75, 0.07);
+}
+
+.account-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #133445;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 0.35rem 0.45rem 0.2rem;
+}
+
+.account-role {
+  margin: 0 0.45rem 0.45rem;
+  font-size: 0.72rem;
+  color: #607787;
+  text-transform: lowercase;
+}
+
+.action-btn {
+  border: 0;
+  width: 100%;
+  text-align: left;
+  background: none;
+  color: #c92424;
+}
+
+/* ==========================================================================
+Logo styles
+========================================================================== */
+.logo-img {
+  height: 45px;
+  width: 45px;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, rgba(24, 145, 84, 0.95), rgba(19, 113, 155, 0.95)),
+    url('/content/images/logo-jhipster.png') no-repeat center center;
+  background-size: contain;
+}
+
+@media (max-width: 991.98px) {
+  .mobile-topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #ffffff;
+    color: #173342;
+    height: 64px;
+    padding: 0 0.75rem;
+    border-bottom: 1px solid #d7e2e8;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+  }
+
+  .brand-mobile {
+    text-decoration: none;
+  }
+
+  .brand-mobile-text {
+    color: #113242;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .sidebar {
+    position: fixed;
+    z-index: 35;
+    inset: 64px auto 0 0;
+    width: min(290px, 85vw);
+    transform: translateX(-102%);
+    transition: transform 180ms ease;
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-overlay {
+    display: block;
+    position: fixed;
+    inset: 64px 0 0;
+    background: rgba(7, 23, 31, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 180ms ease;
+    z-index: 34;
+  }
+
+  .sidebar-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .mobile-toggle {
+    border: 1px solid #d0dce3;
+    background: #fff;
+    color: #173342;
+    border-radius: 10px;
+    width: 40px;
+    height: 40px;
+  }
+}

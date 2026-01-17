@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!--
+        Added the constraints for entity Mission.
+    -->
+    <changeSet id="20260117145912-2" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="paiement_id"
+                                 baseTableName="mission"
+                                 constraintName="fk_mission__paiement_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="paiement"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="service_jef_id"
+                                 baseTableName="mission"
+                                 constraintName="fk_mission__service_jef_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="service_jef"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="client_id"
+                                 baseTableName="mission"
+                                 constraintName="fk_mission__client_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="client"
+                                 />
+
+        <addForeignKeyConstraint baseColumnNames="technicien_id"
+                                 baseTableName="mission"
+                                 constraintName="fk_mission__technicien_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="technicien"
+                                 />
+    </changeSet>
+</databaseChangeLog>
