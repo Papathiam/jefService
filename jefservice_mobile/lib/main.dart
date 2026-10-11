@@ -45,6 +45,7 @@ class JefApp extends StatelessWidget {
         )),
       ),
       home: !session.ready ? const JefSplash() :
+          session.startupError != null ? JefStartupError(session: session) :
           !session.loggedIn ? AuthPage(session: session) : Shell(session: session),
     ),
   );
@@ -62,6 +63,42 @@ class JefSplash extends StatelessWidget {
       SizedBox(height: 28),
       CircularProgressIndicator(color: jefOrange),
     ])),
+  );
+}
+
+class JefStartupError extends StatelessWidget {
+  const JefStartupError({super.key, required this.session});
+  final JefSession session;
+
+  @override
+  Widget build(BuildContext context) => Scaffold(
+    body: SafeArea(
+      child: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(26),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(Icons.wifi_off_rounded, size: 72, color: jefPrimary),
+            const SizedBox(height: 22),
+            const Text('Connexion au serveur indisponible',
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w800, color: jefDark)),
+            const SizedBox(height: 12),
+            Text(session.startupError ?? 'Veuillez réessayer.',
+                textAlign: TextAlign.center),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: session.start,
+              child: const Text('Réessayer'),
+            ),
+            const SizedBox(height: 10),
+            TextButton(
+              onPressed: session.logout,
+              child: const Text('Changer de compte'),
+            ),
+          ]),
+        ),
+      ),
+    ),
   );
 }
 
@@ -388,7 +425,12 @@ class TechniciansPage extends StatefulWidget {
 class _TechniciansPageState extends State<TechniciansPage> {
   late Future<List<Map<String,dynamic>>> future;
   @override void initState(){super.initState();reload();}
-  void reload()=>future=widget.session.api.technicians(jefId(widget.service['id'])!);
+  void reload() {
+    final serviceId = jefId(widget.service['id']);
+    future = serviceId == null
+        ? Future<List<Map<String, dynamic>>>.error(const JefError('Service introuvable.'))
+        : widget.session.api.technicians(serviceId);
+  }
   @override Widget build(BuildContext context)=>Scaffold(
     appBar:AppBar(title:Text(jefText(widget.service['nom']))),
     body:FutureBuilder<List<Map<String,dynamic>>>(
@@ -426,10 +468,10 @@ class _TechniciansPageState extends State<TechniciansPage> {
                 SizedBox(width:160,child:ElevatedButton(
                   onPressed:()=>Navigator.push(context,MaterialPageRoute(builder:(_)=>
                     NewMissionPage(session:widget.session,service:widget.service,technician:t))),
-                  child:const Text('Demander')),
+                  child:const Text('Demander'))),
               ]),
             ]))),
-          )),
+          ),
         ]);
       },
     ),
@@ -450,7 +492,9 @@ class _NewMissionPageState extends State<NewMissionPage> {
   @override void dispose(){description.dispose();price.dispose();super.dispose();}
   Future<void> submit() async {
     final clientId=widget.session.profileId;
+    final serviceId=jefId(widget.service['id']);
     if(clientId==null){jefError(context,const JefError('Profil client introuvable.'));return;}
+    if(serviceId==null){jefError(context,const JefError('Service introuvable.'));return;}
     if(description.text.trim().length<10){
       jefError(context,const JefError('Décrivez le besoin en au moins 10 caractères.'));return;
     }
@@ -463,7 +507,7 @@ class _NewMissionPageState extends State<NewMissionPage> {
     try {
       final position=await jefPosition();
       await widget.session.api.createMission(
-        clientId:clientId,serviceId:jefId(widget.service['id'])!,
+        clientId:clientId,serviceId:serviceId,
         technicianId:jefId(widget.technician?['id']),
         description:description.text.trim(),latitude:position.latitude,
         longitude:position.longitude,budget:proposed);
@@ -539,7 +583,10 @@ class _MissionsPageState extends State<MissionsPage> {
     }catch(e){if(mounted)jefError(context,e);}
   }
   @override Widget build(BuildContext context)=>RefreshIndicator(
-    onRefresh:()async{setState(reload);await future;},
+    onRefresh:() async {
+      setState(reload);
+      try { await future; } catch (_) { /* FutureBuilder affiche l'erreur. */ }
+    },
     child:ListView(padding:const EdgeInsets.all(20),children:[
       jefTitle(professional?'Mes interventions':'Mes demandes',
         subtitle:'Consultez le suivi des missions Jef Service.'),
@@ -603,7 +650,10 @@ class _ProDashboardState extends State<ProDashboard> {
   @override void initState(){super.initState();load();}
   Future<void> load() async {
     final id=widget.session.profileId;
-    if(id==null)return;
+    if(id==null) {
+      error = const JefError('Profil technicien introuvable.');
+      return;
+    }
     try {
       final result=await widget.session.api.technician(id);
       if(mounted)setState((){tech=result;error=null;});

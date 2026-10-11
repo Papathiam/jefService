@@ -166,7 +166,7 @@ class JefApi {
   }
   Future<List<Map<String, dynamic>>> missions(int id, {required bool professional}) =>
       paged('/api/missions', {
-        professional ? 'technicienId.equals' : 'clientId.equals': '$id',
+        (professional ? 'technicienId.equals' : 'clientId.equals'): '$id',
         'sort': 'dateCreation,desc',
       });
   Future<Map<String, dynamic>> createMission({
@@ -229,24 +229,44 @@ class JefSession extends ChangeNotifier {
   JefRole role = JefRole.client;
   int? profileId;
   bool ready = false;
+  String? startupError;
   bool get loggedIn => _token != null && _token!.isNotEmpty;
 
   Future<void> start() async {
+    ready = false;
+    startupError = null;
+    notifyListeners();
     try {
       _token = await storage.read(key: 'jef_token');
       role = (await storage.read(key: 'jef_role')) == 'technician'
           ? JefRole.technician : JefRole.client;
-      if (loggedIn && JefApi.baseUrl.isNotEmpty) {
-        try { await refresh(); }
-        on JefError catch(e) {
-          if (e.code == 401 || e.code == 403) await logout();
+      if (loggedIn) {
+        if (JefApi.baseUrl.isEmpty) {
+          startupError = 'Configurez l\'adresse du serveur (API_BASE_URL).';
+        } else {
+          try {
+            await refresh();
+          } on JefError catch (error) {
+            if (error.code == 401 || error.code == 403) {
+              await logout();
+            } else {
+              startupError = error.message;
+            }
+          }
         }
       }
-    } catch (_) { _token = null; }
-    finally { ready = true; notifyListeners(); }
+    } catch (_) {
+      _token = null;
+      accountData = {};
+      profileId = null;
+    } finally {
+      ready = true;
+      notifyListeners();
+    }
   }
 
   Future<void> signIn(String token, JefRole selected) async {
+    startupError = null;
     _token = token;
     role = selected;
     try {
@@ -278,6 +298,7 @@ class JefSession extends ChangeNotifier {
   }
 
   Future<void> logout() async {
+    startupError = null;
     _token = null; profileId = null; accountData = {}; role = JefRole.client;
     await storage.delete(key: 'jef_token');
     await storage.delete(key: 'jef_role');
