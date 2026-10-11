@@ -93,7 +93,7 @@ Widget jefCard({required Widget child, EdgeInsets? padding}) => Container(
 Widget jefPill(String text, {Color color = jefPrimary}) => Container(
   padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
   decoration: BoxDecoration(
-    color: color.withValues(alpha: .10),
+    color: color.withValues(alpha: 0.10),
     borderRadius: BorderRadius.circular(50)),
   child: Text(text, style: TextStyle(
     color: color, fontSize: 12, fontWeight: FontWeight.w700)),
@@ -111,6 +111,7 @@ class AuthPage extends StatefulWidget {
 }
 class _AuthPageState extends State<AuthPage> {
   bool professional = false, registration = false, verifying = false, busy = false;
+  DateTime? lastOtpRequest;
   final phone = TextEditingController(), otp = TextEditingController();
   final first = TextEditingController(), last = TextEditingController();
   final minPrice = TextEditingController(), maxPrice = TextEditingController();
@@ -121,6 +122,10 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Future<void> submitPhone() async {
+    if (lastOtpRequest != null && DateTime.now().difference(lastOtpRequest!).inSeconds < 45) {
+      jefError(context, const JefError('Veuillez patienter 45 secondes avant un nouvel envoi.'));
+      return;
+    }
     if (!RegExp(r'^\d{9,15}$').hasMatch(phone.text.trim())) {
       jefError(context, const JefError('Saisissez un numéro entre 9 et 15 chiffres.')); return;
     }
@@ -140,6 +145,7 @@ class _AuthPageState extends State<AuthPage> {
       await widget.session.api.sendOtp(phone.text.trim(),
         professional: professional, registration: registration,
         latitude: latitude!, longitude: longitude!);
+      lastOtpRequest = DateTime.now();
       if (!mounted) return;
       setState(() => verifying = true);
     } catch(e) { if (mounted) jefError(context,e); }

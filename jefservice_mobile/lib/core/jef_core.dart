@@ -30,15 +30,17 @@ String jefStatus(dynamic value) => {
 }[jefText(value)] ?? 'Non défini';
 
 class JefApi {
-  JefApi(this.tokenProvider, {http.Client? client})
-      : client = client ?? http.Client();
+  JefApi(this.tokenProvider, {http.Client? client, String? baseUrlOverride})
+      : client = client ?? http.Client(),
+        _baseUrl = baseUrlOverride ?? baseUrl;
   static const baseUrl = String.fromEnvironment('API_BASE_URL', defaultValue: '');
   static const timeout = Duration(seconds: 20);
   final String? Function() tokenProvider;
   final http.Client client;
+  final String _baseUrl;
 
   Uri _url(String path, [Map<String, String>? query]) {
-    final host = baseUrl.trim().replaceFirst(RegExp(r'/+$'), '');
+    final host = _baseUrl.trim().replaceFirst(RegExp(r'/+$'), '');
     final parsed = Uri.tryParse(host + path);
     if (host.isEmpty || parsed == null || !parsed.hasAuthority ||
         (parsed.scheme != 'http' && parsed.scheme != 'https')) {
