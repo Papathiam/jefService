@@ -234,8 +234,8 @@ class _AuthPageState extends State<AuthPage> {
       const SizedBox(height: 24),
       if (!verifying) ...[
         SegmentedButton<bool>(segments: const [
-          ButtonSegment(value:false,label:Text('Je suis client'),icon:Icon(Icons.person_outline)),
-          ButtonSegment(value:true,label:Text('Professionnel'),icon:Icon(Icons.handyman_outlined)),
+          ButtonSegment(value:false,label:Text('Client'),icon:Icon(Icons.person_outline)),
+          ButtonSegment(value:true,label:Text('Technicien'),icon:Icon(Icons.handyman_outlined)),
         ],selected:{professional},onSelectionChanged:(s)=>setState(() {
           professional=s.first; registration=false;
         })),
@@ -277,6 +277,10 @@ class _AuthPageState extends State<AuthPage> {
         ElevatedButton(onPressed:busy?null:submitOtp,
           child:busy?const CircularProgressIndicator(color:Colors.white)
             :const Text('Valider et continuer')),
+        TextButton(
+          onPressed:busy?null:submitPhone,
+          child:const Text('Renvoyer le code SMS (après 45 s)'),
+        ),
         TextButton(onPressed:busy?null:()=>setState(() {
           verifying=false; otp.clear();
         }),child:const Text('Modifier le numéro')),
@@ -299,20 +303,42 @@ class Shell extends StatefulWidget {
 }
 class _ShellState extends State<Shell> {
   int index=0;
+  final List<bool> visited = [true, false, false, false];
+
+  Widget pageAt(int page, bool professional) {
+    if (!visited[page]) return const SizedBox.shrink();
+    switch (page) {
+      case 0:
+        return professional
+            ? ProDashboard(session:widget.session)
+            : ClientHome(session:widget.session);
+      case 1:
+        return professional
+            ? MissionsPage(session:widget.session)
+            : ServicesPage(session:widget.session);
+      case 2:
+        return professional
+            ? DocumentsPage(session:widget.session)
+            : MissionsPage(session:widget.session);
+      default:
+        return ProfilePage(session:widget.session);
+    }
+  }
+
   @override Widget build(BuildContext context) {
     final professional=widget.session.role==JefRole.technician;
-    final pages=<Widget>[
-      professional?ProDashboard(session:widget.session):ClientHome(session:widget.session),
-      professional?MissionsPage(session:widget.session):ServicesPage(session:widget.session),
-      professional?DocumentsPage(session:widget.session):MissionsPage(session:widget.session),
-      ProfilePage(session:widget.session),
-    ];
     return Scaffold(
-      body: SafeArea(child:IndexedStack(index:index,children:pages)),
+      body: SafeArea(child:IndexedStack(
+        index:index,
+        children:List.generate(4, (page) => pageAt(page, professional)),
+      )),
       bottomNavigationBar:NavigationBar(
         backgroundColor:Colors.white,
         indicatorColor:jefPale,
-        selectedIndex:index,onDestinationSelected:(i)=>setState(()=>index=i),
+        selectedIndex:index,onDestinationSelected:(i)=>setState(() {
+          index=i;
+          visited[i]=true;
+        }),
         destinations:[
           const NavigationDestination(icon:Icon(Icons.home_outlined),
             selectedIcon:Icon(Icons.home_rounded),label:'Accueil'),
@@ -646,18 +672,28 @@ class ProDashboard extends StatefulWidget {
 class _ProDashboardState extends State<ProDashboard> {
   Map<String,dynamic>? tech;
   bool busy=false;
+  bool loading=true;
   Object? error;
   @override void initState(){super.initState();load();}
   Future<void> load() async {
     final id=widget.session.profileId;
     if(id==null) {
-      error = const JefError('Profil technicien introuvable.');
+      if (mounted) setState(() {
+        loading=false;
+        tech=null;
+        error=const JefError('Profil technicien introuvable.');
+      });
       return;
     }
+    if (mounted) setState(() {loading=true;error=null;});
     try {
       final result=await widget.session.api.technician(id);
       if(mounted)setState((){tech=result;error=null;});
-    }catch(e){if(mounted)setState(()=>error=e);}
+    }catch(e) {
+      if(mounted)setState((){tech=null;error=e;});
+    } finally {
+      if(mounted)setState(()=>loading=false);
+    }
   }
   Future<void> toggle(bool value) async {
     final id=widget.session.profileId;
@@ -686,8 +722,15 @@ class _ProDashboardState extends State<ProDashboard> {
           style:TextStyle(color:jefPale)),
       ])),
     const SizedBox(height:24),
-    if(error!=null)jefCard(child:Text(error.toString())),
-    if(tech==null)jefCard(child:const Text('Chargement de votre profil professionnel...')),
+    if(loading)jefCard(child:const Row(children:[
+      SizedBox(width:20,height:20,child:CircularProgressIndicator(strokeWidth:2)),
+      SizedBox(width:14),
+      Expanded(child:Text('Chargement de votre profil professionnel...')),
+    ])),
+    if(!loading && error!=null)jefCard(child:Text(error is JefError
+      ? (error as JefError).message : 'Le profil est momentanément inaccessible.')),
+    if(!loading && tech==null && error==null)
+      jefCard(child:const Text('Aucun profil professionnel disponible.')),
     if(tech!=null)jefCard(child:Column(crossAxisAlignment:CrossAxisAlignment.start,children:[
       const Text('État de votre compte',style:TextStyle(fontWeight:FontWeight.w800,fontSize:17)),
       const SizedBox(height:9),
@@ -724,15 +767,23 @@ class _DocumentsPageState extends State<DocumentsPage> {
     future=id==null?Future.value([]):widget.session.api.documents(id);
   }
   Future<void> choose(bool identity) async {
-    final result=await FilePicker.platform.pickFiles(type:FileType.custom,
-      allowedExtensions:['pdf','jpg','jpeg','png']);
-    if(result==null||result.files.isEmpty)return;
-    final file=result.files.single;
-    if(file.size>8*1024*1024 || file.path==null) {
-      if(mounted)jefError(context,const JefError('Fichier inaccessible ou supérieur à 8 Mo.'));
-      return;
+    if (busy) return;
+    try {
+      final result=await FilePicker.platform.pickFiles(
+        type:FileType.custom,
+        allowedExtensions:['pdf','jpg','jpeg','png'],
+      );
+      if(!mounted || result==null || result.files.isEmpty)return;
+      final file=result.files.single;
+      if(file.size==0 || file.size>8*1024*1024 || file.path==null) {
+        jefError(context,const JefError('Choisissez un fichier valide de 8 Mo maximum.'));
+        return;
+      }
+      setState((){if(identity)cni=file;else diploma=file;});
+    } catch (_) {
+      if(mounted)jefError(context,const JefError(
+        'Impossible de sélectionner ce fichier. Vérifiez les autorisations du téléphone.'));
     }
-    setState((){if(identity)cni=file;else diploma=file;});
   }
   Future<void> send() async {
     final id=widget.session.profileId;
@@ -793,43 +844,87 @@ class ProfilePage extends StatefulWidget {
   final JefSession session;
   @override State<ProfilePage> createState()=>_ProfilePageState();
 }
+class _AccountChanges {
+  const _AccountChanges({required this.firstName,required this.lastName,required this.email});
+  final String firstName;
+  final String lastName;
+  final String? email;
+}
+
+class _EditAccountDialog extends StatefulWidget {
+  const _EditAccountDialog({required this.account});
+  final Map<String,dynamic> account;
+  @override State<_EditAccountDialog> createState()=>_EditAccountDialogState();
+}
+
+class _EditAccountDialogState extends State<_EditAccountDialog> {
+  late final TextEditingController first;
+  late final TextEditingController last;
+  late final TextEditingController email;
+
+  @override void initState() {
+    super.initState();
+    first = TextEditingController(text:jefText(widget.account['firstName']));
+    last = TextEditingController(text:jefText(widget.account['lastName']));
+    email = TextEditingController(text:jefText(widget.account['email']));
+  }
+
+  @override void dispose(){
+    first.dispose();last.dispose();email.dispose();
+    super.dispose();
+  }
+
+  @override Widget build(BuildContext context)=>AlertDialog(
+    title:const Text('Modifier mon profil'),
+    content:SingleChildScrollView(child:Column(mainAxisSize:MainAxisSize.min,children:[
+      TextField(controller:first,decoration:const InputDecoration(labelText:'Prénom')),
+      const SizedBox(height:12),
+      TextField(controller:last,decoration:const InputDecoration(labelText:'Nom')),
+      const SizedBox(height:12),
+      TextField(controller:email,keyboardType:TextInputType.emailAddress,
+        decoration:const InputDecoration(labelText:'E-mail')),
+    ])),
+    actions:[
+      TextButton(onPressed:()=>Navigator.pop(context),
+        child:const Text('Annuler')),
+      FilledButton(onPressed:(){
+        final cleanedEmail=email.text.trim();
+        if (cleanedEmail.isNotEmpty &&
+            !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$').hasMatch(cleanedEmail)) {
+          jefError(context,const JefError('Veuillez saisir une adresse e-mail valide.'));
+          return;
+        }
+        Navigator.pop(context,_AccountChanges(
+          firstName:first.text.trim(),lastName:last.text.trim(),
+          email:cleanedEmail.isEmpty?null:cleanedEmail,
+        ));
+      },child:const Text('Enregistrer')),
+    ],
+  );
+}
+
 class _ProfilePageState extends State<ProfilePage> {
   bool saving=false;
   Future<void> edit() async {
     final data=widget.session.accountData;
-    final first=TextEditingController(text:jefText(data['firstName']));
-    final last=TextEditingController(text:jefText(data['lastName']));
-    final email=TextEditingController(text:jefText(data['email']));
-    final result=await showDialog<bool>(context:context,builder:(context)=>AlertDialog(
-      title:const Text('Modifier mon profil'),
-      content:SingleChildScrollView(child:Column(mainAxisSize:MainAxisSize.min,children:[
-        TextField(controller:first,decoration:const InputDecoration(labelText:'Prénom')),
-        const SizedBox(height:12),
-        TextField(controller:last,decoration:const InputDecoration(labelText:'Nom')),
-        const SizedBox(height:12),
-        TextField(controller:email,keyboardType:TextInputType.emailAddress,
-          decoration:const InputDecoration(labelText:'E-mail')),
-      ])),
-      actions:[
-        TextButton(onPressed:()=>Navigator.pop(context,false),child:const Text('Annuler')),
-        FilledButton(onPressed:()=>Navigator.pop(context,true),child:const Text('Enregistrer')),
-      ]));
-    if(!mounted)return;
-    if(result==true){
-      setState(()=>saving=true);
-      try{
-        await widget.session.api.updateAccount({
-          'login':data['login'],'firstName':first.text.trim(),
-          'lastName':last.text.trim(),
-          'email':email.text.trim().isEmpty?null:email.text.trim(),
-          'langKey':jefText(data['langKey']).isEmpty?'fr':data['langKey'],
-          'imageUrl':data['imageUrl'],
-        });
-        await widget.session.refresh();
-      }catch(e){if(mounted)jefError(context,e);}
-      finally{if(mounted)setState(()=>saving=false);}
-    }
-    first.dispose();last.dispose();email.dispose();
+    final result=await showDialog<_AccountChanges>(
+      context:context,
+      builder:(_)=>_EditAccountDialog(account:data),
+    );
+    if(!mounted || result==null)return;
+    setState(()=>saving=true);
+    try{
+      await widget.session.api.updateAccount({
+        'login':data['login'],
+        'firstName':result.firstName,
+        'lastName':result.lastName,
+        'email':result.email,
+        'langKey':jefText(data['langKey']).isEmpty?'fr':data['langKey'],
+        'imageUrl':data['imageUrl'],
+      });
+      await widget.session.refresh();
+    }catch(e){if(mounted)jefError(context,e);}
+    finally{if(mounted)setState(()=>saving=false);}
   }
   @override Widget build(BuildContext context){
     final account=widget.session.accountData;
